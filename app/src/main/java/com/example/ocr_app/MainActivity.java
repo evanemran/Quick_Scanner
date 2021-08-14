@@ -1,6 +1,7 @@
 package com.example.ocr_app;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -9,7 +10,9 @@ import android.Manifest;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -35,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     Button capture_button, copy_button;
     Bitmap bitmap;
     TextView textView;
+    private PackageInfo mPackageInfo;
     private static final int CAMERA_REQUEST_CODE = 100;
 
     @Override
@@ -45,12 +49,20 @@ public class MainActivity extends AppCompatActivity {
         copy_button = findViewById(R.id.btn_copy);
         textView = findViewById(R.id.textView);
 
+        try {
+            mPackageInfo = this.getPackageManager().getPackageInfo(getPackageName(), 0);
+            setupVersionInfo();
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
 
         if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(MainActivity.this, new String[]{
                     Manifest.permission.CAMERA
             },CAMERA_REQUEST_CODE);
         }
+
+        showAlertDialog("Hello!! Click on the Capture Image button to capture or choose an image from gallery to perform OCR");
 
         capture_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,6 +83,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
+        if (data==null){
+            showAlertDialog("Capture OCR is not yet available for Android 11, It will be updated soon. Please use Image OCR.");
+        }
 
         if (requestCode==CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE){
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
@@ -102,6 +118,7 @@ public class MainActivity extends AppCompatActivity {
             }
             textView.setText(stringBuilder.toString());
             capture_button.setText("Retake");
+            copy_button.setVisibility(View.VISIBLE);
         }
     }
 
@@ -110,5 +127,34 @@ public class MainActivity extends AppCompatActivity {
         ClipData clip = ClipData.newPlainText("Copied Text", text);
         clipboard.setPrimaryClip(clip);
         Toast.makeText(MainActivity.this, "Copied to clipboard!", Toast.LENGTH_SHORT).show();
+    }
+
+    private void showAlertDialog(String message){
+        AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
+        builder1.setMessage(message);
+        builder1.setCancelable(false);
+
+        builder1.setPositiveButton(
+                "Ok",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+
+
+        AlertDialog alert11 = builder1.create();
+        alert11.show();
+    }
+
+    private void setupVersionInfo() {
+
+        if (mPackageInfo != null) {
+            TextView versionInfoTextView = findViewById(R.id.txtVersionCode);
+            String vinfo = String.format("V: %s", mPackageInfo.versionName);
+            versionInfoTextView.setText(vinfo);
+
+        }
+
     }
 }

@@ -6,16 +6,53 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_alignParentTop="true"
+        android:layout_width="match_parent"
+        android:background="@color/purple_500"
+        android:layout_height="?attr/actionBarSize">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="10dp"
+                android:fontFamily="@font/orbitron"
+                android:gravity="center_vertical"
+                android:text="@string/app_name"
+                android:textColor="@color/white"
+                android:textSize="20sp">
+
+            </TextView>
+            <TextView
+                android:id="@+id/txtVersionCode"
+                android:layout_alignParentEnd="true"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:fontFamily="@font/orbitron"
+                android:gravity="center_vertical"
+                android:layout_marginEnd="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent">
+
+            </TextView>
+        </RelativeLayout>
+    </androidx.appcompat.widget.Toolbar>
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/linear_btn_holder"
-        android:layout_alignParentTop="true"
+        android:layout_below="@+id/toolbar"
         android:layout_margin="8dp">
         <TextView
             android:id="@+id/textView"
             android:textColor="@color/black"
-            android:text="Hello!! Capture or choose an image from gallery to perform OCR"
+            android:text=""
             android:textSize="22sp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
@@ -29,14 +66,19 @@
         <Button
             android:id="@+id/btn_capture"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:fontFamily="@font/orbitron"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:layout_margin="8dp"
-            android:text="Capture" />
+            android:text="Capture Image" />
         <Button
             android:id="@+id/btn_copy"
+            android:visibility="visible"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:fontFamily="@font/orbitron"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:layout_margin="8dp"
             android:text="Copy Text" />
